@@ -1,110 +1,74 @@
-import speech_recognition as sr
-from gtts import gTTS
-import playsound
-import numpy as np
-from pydub import AudioSegment
-import librosa
+#!/usr/bin/env python3
+"""
+Main application entry point for English Conversation Coach
+"""
+
 import os
+import soundfile as sf
+import librosa
 
-# Initialize recognizer
-recognizer = sr.Recognizer()
+from audio.capture import record_and_recognize
+from audio.playback import text_to_speech
+from audio.processing.noise_reduction import enhanced_spectral_noise_reduction
+from audio.processing.preprocessing import preprocess_audio
+from audio.processing.pitch_analysis import analyze_pitch
+from audio.processing.tempo_analysis import analyze_tempo
+from audio.processing.feature_extraction import extract_spectral_features
+from utils.visualization import visualize_features
 
-# Capture audio
-with sr.Microphone() as source:
-    print("Say something...")
-    audio = recognizer.listen(source)
-
-    try:
-        # Speech to text
-        text = recognizer.recognize_google(audio)
-        print("You said:", text)
-
-        # Text to speech
-        tts = gTTS(text=text, lang='en')
-        tts.save("response.mp3")
-        print("Speaking back...")
-        os.system("afplay response.mp3")
-
-        # delete the audio after playing
-        os.remove("response.mp3")
-
-    except sr.UnknownValueError:
-        print("Sorry, I couldn't understand that.")
-    except sr.RequestError:
-        print("Error connecting to the speech recognition service.")
-        
-        
-
-def spectral_noise_reduction(audio_file, threshold=0.1):
-    # Load audio with librosa
-    y, sr = librosa.load(audio_file, sr=16000)
+def main():
+    """Main function to run the complete audio processing pipeline"""
+    # Record and recognize speech
+    text, audio = record_and_recognize()
     
-    # Compute short-time Fourier transform
-    stft = librosa.stft(y)
-    magnitude, phase = np.abs(stft), np.angle(stft)
+    if text is None:
+        return
     
-    # Create noise mask (simple threshold-based)
-    noise_mask = magnitude < threshold * np.max(magnitude)
-    magnitude[noise_mask] = 0  # Zero out noisy frequencies
+    # Convert text back to speech
+    text_to_speech(text)
     
-    # Reconstruct audio
-    stft_clean = magnitude * np.exp(1j * phase)
-    y_clean = librosa.istft(stft_clean)
+    # Save raw audio
+    raw_file = "raw_audio.wav"
+    with open(raw_file, "wb") as f:
+        f.write(audio.get_wav_data())
+    
+    # Preprocess with pydub
+    processed_file = preprocess_audio(raw_file)
+    
+    # Load and further process with librosa
+    y, sr = librosa.load(processed_file, sr=16000)
+    y_clean = enhanced_spectral_noise_reduction(y, sr)
     
     # Save cleaned audio
-    output_file = "cleaned_audio.wav"
-    librosa.output.write_wav(output_file, y_clean, sr)
-    return output_file
-
-def preprocess_audio(input_file, output_file="processed_audio.wav"):
-    # Load with pydub
-    audio = AudioSegment.from_wav(input_file)
+    cleaned_file = "cleaned_audio.wav"
+    sf.write(cleaned_file, y_clean, sr)
     
-    # Normalize volume
-    audio = audio.normalize()
+    # Extract features
+    pitch_features = analyze_pitch(y_clean, sr)
+    tempo_features = analyze_tempo(y_clean, sr)
+    spectral_features = extract_spectral_features(y_clean, sr)
     
-    # Apply low-pass filter (remove noise above 3kHz)
-    audio = audio.low_pass_filter(3000)
+    # Combine all features
+    all_features = {
+        'pitch': pitch_features,
+        'tempo': tempo_features,
+        'spectral': spectral_features
+    }
     
-    # Export processed audio
-    audio.export(output_file, format="wav")
-    return output_file
+    # Visualize features
+    visualize_features(y_clean, sr, all_features, "Your Speech Analysis")
+    
+    # Display analysis results
+    print("\n=== PRONUNCIATION ANALYSIS RESULTS ===")
+    print(f"Mean Pitch: {pitch_features['mean_pitch']:.1f} Hz")
+    print(f"Pitch Range: {pitch_features['pitch_range'][0]:.1f}-{pitch_features['pitch_range'][1]:.1f} Hz")
+    print(f"Speaking Rate: {tempo_features['bpm']:.1f} BPM")
+    print(f"Rhythm Consistency: {tempo_features['interval_variability']:.3f} (lower is better)")
+    
+    # Clean up temporary files
+    os.remove(raw_file)
+    os.remove(processed_file)
+    os.remove(cleaned_file)
 
-# Initialize recognizer
-recognizer = sr.Recognizer()
-
-# Capture audio
-with sr.Microphone() as source:
-    print("Say something (5 seconds)...")
-    recognizer.adjust_for_ambient_noise(source)
-    audio = recognizer.listen(source, timeout=5, phrase_time_limit=5)
-    print("Audio captured!")
-
-# Save raw audio
-raw_file = "raw_audio.wav"
-with open(raw_file, "wb") as f:
-    f.write(audio.get_wav_data())
-
-# Preprocess with pydub
-processed_file = preprocess_audio(raw_file)
-
-# Further clean with librosa
-cleaned_file = spectral_noise_reduction(processed_file)
-
-# Transcribe processed audio
-with sr.AudioFile(cleaned_file) as source:
-    audio = recognizer.record(source)
-    try:
-        text = recognizer.recognize_google(audio)
-        print(f"You said: {text}")
-        with open("transcriptions.txt", "a") as f:
-            f.write(f"Response: {text}\n")
-    except sr.UnknownValueError:
-        print("Could not understand audio")
-    except sr.RequestError as e:
-        print(f"API error: {e}")
-# Clean up temporary files
-os.remove(raw_file)
-os.remove(processed_file)
-os.remove(cleaned_file)
-
+if __name__ == "__main__":
+    main()
