@@ -26,3 +26,6 @@ def analyze_pitch(audio, sr, fmin=75, fmax=400):
         'pitch_range': (np.min(f0_clean), np.max(f0_clean)) if len(f0_clean) > 0 else (0, 0),
         'semitones': f0_semitones
     }
+    
+    
+
