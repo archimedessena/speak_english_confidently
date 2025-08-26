@@ -7,6 +7,7 @@ import os
 import soundfile as sf
 import librosa
 
+
 from audio.capture import record_and_recognize
 from audio.playback import text_to_speech
 from audio.processing.noise_reduction import enhanced_spectral_noise_reduction
@@ -15,6 +16,9 @@ from audio.processing.pitch_analysis import analyze_pitch
 from audio.processing.tempo_analysis import analyze_tempo
 from audio.processing.feature_extraction import extract_spectral_features
 from utils.visualization import visualize_features
+
+from nlp.grammar_check import check_text
+from nlp.vocabulary_enhancer import preprocess_text, suggest_synonyms, load_vocabulary_tracker, save_vocabulary_tracker, track_vocabulary, vocabulary_enhancers 
 
 def main():
     """Main function to run the complete audio processing pipeline"""
