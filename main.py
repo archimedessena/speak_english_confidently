@@ -4,10 +4,14 @@ Main application entry point for English Conversation Coach
 """
 
 import os
+import sys
 import soundfile as sf
 import librosa
 
+# Add the current directory to Python path
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
+# Import from our modules
 from audio.capture import record_and_recognize
 from audio.playback import text_to_speech
 from audio.processing.noise_reduction import enhanced_spectral_noise_reduction
@@ -16,9 +20,7 @@ from audio.processing.pitch_analysis import analyze_pitch
 from audio.processing.tempo_analysis import analyze_tempo
 from audio.processing.feature_extraction import extract_spectral_features
 from utils.visualization import visualize_features
-
-from nlp.grammar_check import check_text
-from nlp.vocabulary_enhancer import preprocess_text, suggest_synonyms, load_vocabulary_tracker, save_vocabulary_tracker, track_vocabulary, vocabulary_enhancers 
+from nlp.grammar_check import get_grammar_feedback, check_grammar  # NEW IMPORT
 
 def main():
     """Main function to run the complete audio processing pipeline"""
@@ -28,7 +30,14 @@ def main():
     if text is None:
         return
     
-    # Convert text back to speech
+    # NEW: Grammar check and feedback
+    print("\n" + "="*50)
+    print("GRAMMAR ANALYSIS")
+    print("="*50)
+    grammar_feedback = get_grammar_feedback(text)
+    print(grammar_feedback)
+    
+    # Convert text back to speech (with corrections if needed)
     text_to_speech(text)
     
     # Save raw audio
@@ -63,7 +72,9 @@ def main():
     visualize_features(y_clean, sr, all_features, "Your Speech Analysis")
     
     # Display analysis results
-    print("\n=== PRONUNCIATION ANALYSIS RESULTS ===")
+    print("\n" + "="*50)
+    print("PRONUNCIATION ANALYSIS RESULTS")
+    print("="*50)
     print(f"Mean Pitch: {pitch_features['mean_pitch']:.1f} Hz")
     print(f"Pitch Range: {pitch_features['pitch_range'][0]:.1f}-{pitch_features['pitch_range'][1]:.1f} Hz")
     print(f"Speaking Rate: {tempo_features['bpm']:.1f} BPM")

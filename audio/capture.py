@@ -6,7 +6,7 @@ recognizer = sr.Recognizer()
 def record_and_recognize():
     """Record audio and convert to text"""
     with sr.Microphone() as source:
-        print("tart talking...")
+        print("Start talking, Sena is listening...")
         recognizer.adjust_for_ambient_noise(source)
         audio = recognizer.listen(source, timeout=5, phrase_time_limit=5)
         
