@@ -11,13 +11,13 @@ logger = logging.getLogger(__name__)
 class GrammarChecker:
     def __init__(self, language='en-US'):
         """Initialize LanguageTool with robust error handling"""
-        self.language = language  # Set this first
+        self.language = language  
         self.use_online = False
         self.api_url = "https://api.languagetool.org/v2/check"
         
         try:
             logger.info("Attempting to initialize offline LanguageTool...")
-            # Try with a longer timeout and explicit temp directory
+         
             self.tool = language_tool_python.LanguageTool(
                 language,
                 remote_url=None,  # Force offline mode

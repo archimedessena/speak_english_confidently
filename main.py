@@ -20,7 +20,9 @@ from audio.processing.pitch_analysis import analyze_pitch
 from audio.processing.tempo_analysis import analyze_tempo
 from audio.processing.feature_extraction import extract_spectral_features
 from utils.visualization import visualize_features
-from nlp.grammar_check import get_grammar_feedback, check_grammar  # NEW IMPORT
+from nlp.grammar_check import get_grammar_feedback
+from nlp.vocabulary_enhancer import get_vocabulary_feedback, analyze_vocabulary  
+from nlp.vocabulary_enhancer import get_vocabulary_feedback, analyze_vocabulary
 
 def main():
     """Main function to run the complete audio processing pipeline"""
@@ -30,14 +32,34 @@ def main():
     if text is None:
         return
     
-    # NEW: Grammar check and feedback
+    # Grammar check and feedback
     print("\n" + "="*50)
     print("GRAMMAR ANALYSIS")
     print("="*50)
     grammar_feedback = get_grammar_feedback(text)
     print(grammar_feedback)
     
-    # Convert text back to speech (with corrections if needed)
+    
+    # Vocabulary enhancement
+    print("\n" + "="*50)
+    print("VOCABULARY ANALYSIS")
+    print("="*50)
+    vocabulary_feedback = get_vocabulary_feedback(text)
+    print(vocabulary_feedback)
+    
+    #  Vocabulary level assessment
+    vocab_analysis = analyze_vocabulary(text)
+    print(f"\n📊 Vocabulary Level: {vocab_analysis['vocabulary_level']}")
+    print(f"📈 Diversity Score: {vocab_analysis['diversity_score']} (higher is better)")
+    
+    # Detailed analysis
+    vocab_analysis = analyze_vocabulary(text)
+    print(f"\n📊 Detailed Analysis:")
+    print(f"   Total words: {vocab_analysis.get('total_words', 0)}")
+    print(f"   Unique words: {vocab_analysis.get('unique_words', 0)}")
+    print(f"   Advanced ratio: {vocab_analysis.get('advanced_ratio', 0) * 100:.1f}%")
+
+    # Convert text back to speech
     text_to_speech(text)
     
     # Save raw audio
