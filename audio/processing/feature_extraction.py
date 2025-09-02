@@ -1,26 +1,15 @@
+import logging
 import librosa
+import numpy as np
 
-def extract_spectral_features(audio, sr):
-    """Extract comprehensive spectral features"""
-    # MFCCs
-    mfccs = librosa.feature.mfcc(y=audio, sr=sr, n_mfcc=13)
-    
-    # Spectral centroid
-    spectral_centroid = librosa.feature.spectral_centroid(y=audio, sr=sr)[0]
-    
-    # Spectral bandwidth
-    spectral_bandwidth = librosa.feature.spectral_bandwidth(y=audio, sr=sr)[0]
-    
-    # Spectral contrast
-    spectral_contrast = librosa.feature.spectral_contrast(y=audio, sr=sr)[0]
-    
-    # Zero-crossing rate
-    zcr = librosa.feature.zero_crossing_rate(audio)[0]
-    
-    return {
-        'mfccs': mfccs,
-        'spectral_centroid': spectral_centroid,
-        'spectral_bandwidth': spectral_bandwidth,
-        'spectral_contrast': spectral_contrast,
-        'zcr': zcr
-    }
+logger = logging.getLogger(__name__)
+
+def extract_features(audio_file):
+    try:
+        y, sr = librosa.load(audio_file)
+        mfcc = np.mean(librosa.feature.mfcc(y=y, sr=sr), axis=1)
+        logger.info("Features extracted.")
+        return mfcc.tolist()
+    except Exception as e:
+        logger.error(f"Feature extraction error: {e}")
+        return []

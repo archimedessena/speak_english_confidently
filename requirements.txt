@@ -48,6 +48,7 @@ PyAudio==0.2.14
 pycparser==2.22
 pydeck==0.9.1
 pydub==0.25.1
+pyenchant==3.2.2
 pyobjc==11.1
 pyobjc-core==11.1
 pyobjc-framework-Accessibility==11.1
@@ -192,6 +193,7 @@ pyobjc-framework-Vision==11.1
 pyobjc-framework-WebKit==11.1
 pyparsing==3.2.3
 python-dateutil==2.9.0.post0
+python-dotenv==1.1.1
 pytz==2025.2
 PyYAML==6.0.2
 referencing==0.36.2
@@ -205,7 +207,7 @@ six==1.17.0
 smmap==5.0.2
 soundfile==0.13.1
 soxr==0.5.0.post1
-SpeechRecognition==3.14.3
+SpeechRecognition==3.10.0
 streamlit==1.47.1
 tenacity==9.1.2
 threadpoolctl==3.6.0
