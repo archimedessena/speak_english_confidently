@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Tracking - Speak English Confidently</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <a href="/" class="nav-link">
+                <i class="fas fa-arrow-left"></i>
+                Back to Home
+            </a>
+            <h1>Your Progress</h1>
+            <div class="user-info">
+                <span id="user-id">User: Anonymous</span>
+            </div>
+        </nav>
+
+        <div class="progress-container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-calendar-check"></i>
+                    <h3>Total Sessions</h3>
+                    <p id="total-sessions">0</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-comments"></i>
+                    <h3>Total Interactions</h3>
+                    <p id="total-interactions">0</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-clock"></i>
+                    <h3>Practice Time</h3>
+                    <p id="practice-time">0 min</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-star"></i>
+                    <h3>Improvement Score</h3>
+                    <p id="improvement-score">85%</p>
+                </div>
+            </div>
+
+            <div class="charts-section">
+                <div class="chart-container">
+                    <h3>Weekly Progress</h3>
+                    <canvas id="weekly-chart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Grammar Accuracy</h3>
+                    <canvas id="grammar-chart"></canvas>
+                </div>
+            </div>
+
+            <div class="feedback-section">
+                <h3>Personalized Feedback</h3>
+                <div id="feedback-content" class="feedback-content">
+                    <p>Loading your personalized feedback...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>
+        // Progress page specific JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProgressData();
+            loadFeedback();
+            initializeCharts();
+        });
+
+        function loadProgressData() {
+            fetch('/api/get_progress?user_id=anonymous')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateProgressDisplay(data.progress);
+                    }
+                })
+                .catch(error => console.error('Error loading progress:', error));
+        }
+
+        function loadFeedback() {
+            fetch('/api/get_feedback?user_id=anonymous')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateFeedbackDisplay(data.feedback);
+                    }
+                })
+                .catch(error => console.error('Error loading feedback:', error));
+        }
+
+        function updateProgressDisplay(progress) {
+            document.getElementById('total-sessions').textContent = progress.total_sessions || 0;
+            document.getElementById('total-interactions').textContent = progress.total_interactions || 0;
+            document.getElementById('practice-time').textContent = (progress.total_interactions * 2) + ' min';
+        }
+
+        function updateFeedbackDisplay(feedback) {
+            const feedbackContent = document.getElementById('feedback-content');
+            let content = `<p><strong>${feedback.message}</strong></p>`;
+            if (feedback.suggestions) {
+                content += '<ul>';
+                feedback.suggestions.forEach(suggestion => {
+                    content += `<li>${suggestion}</li>`;
+                });
+                content += '</ul>';
+            }
+            feedbackContent.innerHTML = content;
+        }
+
+        function initializeCharts() {
+            // Weekly progress chart
+            const weeklyCtx = document.getElementById('weekly-chart').getContext('2d');
+            new Chart(weeklyCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Practice Sessions',
+                        data: [3, 5, 4, 7],
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Grammar accuracy chart
+            const grammarCtx = document.getElementById('grammar-chart').getContext('2d');
+            new Chart(grammarCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Correct', 'Needs Improvement'],
+                    datasets: [{
+                        data: [85, 15],
+                        backgroundColor: ['#27ae60', '#e74c3c']
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+        }
+    </script>
+</body>
+</html>
