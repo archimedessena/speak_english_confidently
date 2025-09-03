@@ -19,6 +19,7 @@ gTTS==2.5.4
 hf-xet==1.1.5
 huggingface-hub==0.34.3
 idna==3.10
+iniconfig==2.1.0
 Jinja2==3.1.6
 joblib==1.5.1
 jsonschema==4.25.0
@@ -33,6 +34,7 @@ matplotlib==3.10.5
 msgpack==1.1.1
 narwhals==2.0.1
 nltk==3.9.1
+noisereduce==3.0.3
 numba==0.61.2
 numpy==2.2.6
 packaging==25.0
@@ -40,6 +42,7 @@ pandas==2.3.1
 pillow==11.3.0
 platformdirs==4.3.8
 playsound==1.2.2
+pluggy==1.6.0
 pooch==1.8.2
 protobuf==6.31.1
 psutil==7.0.0
@@ -49,6 +52,7 @@ pycparser==2.22
 pydeck==0.9.1
 pydub==0.25.1
 pyenchant==3.2.2
+Pygments==2.19.2
 pyobjc==11.1
 pyobjc-core==11.1
 pyobjc-framework-Accessibility==11.1
@@ -192,6 +196,7 @@ pyobjc-framework-Virtualization==11.1
 pyobjc-framework-Vision==11.1
 pyobjc-framework-WebKit==11.1
 pyparsing==3.2.3
+pytest==8.4.1
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.1
 pytz==2025.2
