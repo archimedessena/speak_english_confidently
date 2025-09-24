@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speak English Confidently - Your Personal English Coach</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <i class="fas fa-microphone-alt"></i>
+                    Speak English Confidently
+                </h1>
+                <p class="hero-subtitle">
+                    Master English conversation with AI-powered coaching, real-time feedback, and personalized vocabulary enhancement
+                </p>
+                <div class="hero-buttons">
+                    <a href="/practice" class="btn btn-primary">
+                        <i class="fas fa-play"></i>
+                        Start Practicing
+                    </a>
+                    <a href="/progress" class="btn btn-secondary">
+                        <i class="fas fa-chart-line"></i>
+                        View Progress
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <section class="features">
+            <h2>Why Choose Our English Coach?</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <i class="fas fa-microphone"></i>
+                    <h3>Real-time Speech Analysis</h3>
+                    <p>Get instant feedback on pronunciation, grammar, and vocabulary as you speak</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-brain"></i>
+                    <h3>AI-Powered Coaching</h3>
+                    <p>Personalized responses and suggestions to improve your English skills</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-book"></i>
+                    <h3>Vocabulary Enhancement</h3>
+                    <p>Discover synonyms, antonyms, and better word choices to enrich your language</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>Progress Tracking</h3>
+                    <p>Monitor your improvement with detailed analytics and performance metrics</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="how-it-works">
+            <h2>How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Start a Session</h3>
+                    <p>Begin a new practice session and choose your conversation topic</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Speak Naturally</h3>
+                    <p>Record your voice and speak English naturally in conversation</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Get Feedback</h3>
+                    <p>Receive instant analysis and personalized coaching suggestions</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Track Progress</h3>
+                    <p>Monitor your improvement over time with detailed analytics</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>&copy; 2024 Speak English Confidently. Built with ❤️ for language learners.</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
